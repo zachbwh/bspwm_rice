@@ -1,11 +1,11 @@
 # bspwm_rice
 My configs that I use for my bspwm environment
 
-#Details
+##Details
 
 Programs in Dirty Screenshot: `vim`, `screenfetch`, `htop`, `color scripts` (I can't remember the source, maybe someone else can dig it up on request)
 
- * Bar: Scripts found on Github, based on somebody else's with my own tweaks [`lemonbar-xft-git`]( https://github.com/krypt-n/bar)
+ * Bar: Scripts found on [Github](https://github.com/zachbwh/bspwm_rice), based on somebody else's with my own tweaks [`lemonbar-xft-git`]( https://github.com/krypt-n/bar)
  * Notification Daemon: [`dunst`](https://github.com/knopwob/dunst)
  * Application Launcher" [`rofi`](https://github.com/DaveDavenport/rofi)
  * Homepage: Source found on [Github](https://github.com/zachbwh/bspwm_rice), based on Twily's old homepage with some of my own tweaks
@@ -24,3 +24,5 @@ Feel free to ask any questions or give suggestions.
 
 ##TODO
  * Find/create an alternative homepage that uses the same quick search functionality but displays more information.
+
+##Screenshots
