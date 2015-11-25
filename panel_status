@@ -1,0 +1,88 @@
+#! /bin/sh
+
+source $(dirname $0)/panel_config
+
+volume(){
+    VOLUME=$(pulseaudio-ctl full-status | awk '{split($0, array, " ")} END{print array[1]}')
+    MUTE=$(pulseaudio-ctl full-status | awk '{split($0, array, " ")} END{print array[2]}')
+    if [ "$MUTE" == "yes" ]; then
+        echo "%{F#FF$RED_COLOR A:pulseaudio-ctl mute:}$(printf '%b' "\ue0e1") $VOLUME%%{A F-}"
+    else echo "%{F#FF$BLUE_COLOR A:pulseaudio-ctl mute:}$(printf '%b' "\ue0e1")%{F-} $VOLUME%%{A}"
+    fi
+}
+
+mpd(){
+    STATUS=$(mpc current)
+    if [ "$STATUS" != "" ]; then
+        echo "%{F#FF$GREEN_COLOR A:mpc toggle: A2:mpc toggle: A3:mpc stop:}$(printf '%b' "\ue205")%{F-} $STATUS%{A A} $SEP "
+    else echo ""
+    fi
+}
+
+spotify(){
+    STATUS=$(playerctl status)
+    if [ "$STATUS" == "Playing" ]; then
+        echo "%{F#FF$GREEN_COLOR A:playerctl play-pause: A3:playerctl stop:}$(printf '%b' "\ue205")%{F-} $(playerctl metadata xesam:artist) - $(playerctl metadata xesam:title)%{A A} $SEP "
+    elif [ "$STATUS" == "Paused" ]; then
+        echo "%{F#FF$YELLOW_COLOR A:playerctl play-pause: A3:playerctl stop:}$(printf '%b' "\ue205")%{F-} $(playerctl metadata xesam:artist) - $(playerctl metadata xesam:title)%{A A} $SEP "
+    else echo ""
+    fi
+}
+
+batt01(){
+    batt=$(battery)
+            bat_perc=$(echo $batt | cut -d ' ' -f 2)
+            bat_status=$(echo $batt | cut -d ' ' -f 1)
+
+            if [ $bat_perc -gt 75 ]; then
+                bat_symbol=""
+            elif [ $bat_perc -gt 50 ]; then
+                bat_symbol=""
+            elif [ $bat_perc -gt 10 ]; then
+                bat_symbol=""
+            else
+                bat_symbol=""
+            fi
+
+            if [ $bat_status != "Discharging" ]; then
+                bat_symbol=""
+            fi
+            echo "%{F#FF$BLUE_COLOR$}$bat_symbol%{F-} ${bat_perc}%%{F-}"
+}
+
+brightness(){
+    bright=$(xbacklight -get)
+    bright_perc=$(echo $bright | cut -c 1,2,3)
+    echo "%{F#FF$BLUE_COLOR}$(printf '%b' "\ue234")%{F-} $bright_perc%"
+}
+
+wifi_ssid(){
+    NAME=$(essid -w wlp1s0)
+    if [ "$NAME" == "" ]; then
+        echo "%{F#FF$RED_COLOR}$(printf '%b' "")%{F-} no conn"
+    else echo "%{F#FF$BLUE_COLOR}$(printf '%b' "")%{F-} $NAME"
+    fi
+}
+temperature() {
+    CPU_TEMP=$(sensors | grep "Core 0" | cut -d+ -f2 | cut -d. -f1)
+    echo "%{F#FF$BLUE_COLOR}$(printf '%b' "\ue0c9")%{F-} $CPU_TEMP°C"
+}
+
+load_avg() {
+    AVGLOAD=$(cut -d " " -f 1-3 /proc/loadavg)
+    echo "%{F#FF$BLUE_COLOR}$(printf '%b' "\ue100")%{F-} $AVGLOAD"
+}
+
+transmission() {
+    ACTIVETORR=$(transmission-remote -l | egrep '(Downloading|Up & Down)' | wc -l)
+    echo "%{F#FF$BLUE_COLOR}$(printf '%b' "\ue0d5")%{F-} $ACTIVETORR"
+}
+
+datetime() {
+    echo "%{F#FF$BLUE_COLOR}$(printf '%b' "\ue016")%{F-} $(date +'%a, %b %d') %{F#FF$BLUE_COLOR}$(printf '%b' "")%{F-} $(date +'%H:%M')"
+}
+
+while :; do
+    echo "S%{r}$(wifi_ssid) $SEP $(volume) $SEP $(temperature) $SEP $(batt01) $SEP $(brightness) $SEP $(datetime)"
+    sleep 2
+done

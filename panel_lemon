@@ -1,0 +1,95 @@
+#! /bin/sh
+#
+# bar input parser for bspwm
+
+NORMIFS=$IFS
+FIELDIFS=':'
+
+source $(dirname $0)/panel_config
+
+mpd(){
+    STATUS=$(mpc current | sed 's^\(.\{50\}\).*^\1...^')
+    if [ "$STATUS" != "" ]; then
+        echo "%{F#FF$BLUE_COLOR A:mpc toggle: A2:mpc next:}$(printf '%b' "\ue205")%{F-} $STATUS%{A A} $SEP "
+    else echo ""
+    fi
+}
+
+while read -r line ; do
+    case $line in
+        S*)
+            # conky
+            sys_infos="${line#?}"
+            ;;
+        #M*)
+        #    spotify="${line#?}"
+        #    ;;
+        #C*)
+            ##clock
+            #clock="${line#?}"
+            #clock="%{F$CLOCK_BG}⮂%{F- B$CLOCK_BG A:dzen_popup_toggle.sh calendar:} ${clock} %{A B- F$CLOCK_BG}⮀%{F-}"
+            #;;
+        T*)
+            if [[ ${line#?} == "" ]]; then
+                title="%{F#FF$BLUE_COLOR}$(printf "%b" "\ue0a1")%{F-} $(uname -r)"
+            else title="%{F#FF$BLUE_COLOR}$(printf "%b" "\ue135")%{F-} %{A:bspc config -d focused window_gap 12: A3:bspc config -d focused window_gap 75:}$(echo ${line#?} | sed 's^\(.\{50\}\).*^\1...^')%{A A-}"
+            fi
+            ;;
+        W*)
+            wm_infos=""
+            IFS=$FIELDIFS
+            set -- ${line#?}
+            while [ $# -gt 0 ] ; do
+                item=$1
+                case $item in
+                    [OoFfUu]*)
+                        name=${item#?}
+                        case $name in
+                            1) DESK_ICON="" ;;
+                            2) DESK_ICON="" ;;
+                            3) DESK_ICON="" ;;
+                            4) DESK_ICON="" ;;
+                            5) DESK_ICON="" ;;
+                        esac
+                        case $item in
+                            O*)
+                                # focused occupied desktop
+                                desk="%{F#FF$BLUE_COLOR}$DESK_ICON $(printf '%b' "\ue056")%{F-}"
+                                ;;
+                            F*)
+                                # focused free desktop
+                                desk="%{F#FF$BLUE_COLOR}$DESK_ICON $(printf '%b' "\ue056")%{F-}"
+                                ;;
+                            U*)
+                                # focused urgent desktop
+                                desk="%{F#FF$GREEN_COLOR}$DESK_ICON $(printf '%b' "\ue056")%{F-}"
+                                ;;
+                            o*)
+                                # occupied desktop
+                                desk="%{F#FF$FOREGROUND_COLOR}$DESK_ICON $(printf '%b' "\ue056")%{F-}"
+                                ;;
+                            f*)
+                                # free desktop
+                                desk="%{F#FF$FOREGROUND_COLOR}$DESK_ICON $(printf '%b' "\ue0e6")%{F-}"
+                                ;;
+                            u*)
+                                # urgent desktop
+                                desk="%{F#FF$GREEN_COLOR}$DESK_ICON $(printf '%b' "\ue056")%{F-}"
+                                ;;
+                        esac
+                        wm_infos="${wm_infos}%{A:bspc desktop -f last:}${desk}%{A}"
+                        ;;
+                    [L]*)
+                        if [[ ${item#?} == "T" ]]; then
+                            layout="%{F#FF$FOREGROUND_COLOR B#FF$BLACK2_COLOR A:bspc desktop -l monocle: A3:bspc desktop -R 90:}  $(printf "%b" "\ue257")  %{A A B F-}"
+                        else layout="%{F#FF$FOREGROUND_COLOR B#FF$BLACK2_COLOR A:bspc desktop -l tiled:}  $(printf "%b" "\ue255")  %{A B F-}"
+                        fi
+                        ;;
+                esac
+                shift
+            done
+            IFS=$NORMIFS
+            ;;
+    esac
+    printf "%s\n" "%{l} $title %{c}$wm_infos $sys_infos "
+done
