@@ -7,7 +7,7 @@ Programs in Dirty Screenshot: `vim`, `screenfetch`, `htop`, `color scripts` (I c
 
  * Bar: Scripts found on [Github](https://github.com/zachbwh/bspwm_rice), based on somebody else's with my own tweaks [`lemonbar-xft-git`]( https://github.com/krypt-n/bar)
  * Notification Daemon: [`dunst`](https://github.com/knopwob/dunst)
- * Application Launcher" [`rofi`](https://github.com/DaveDavenport/rofi)
+ * Application Launcher [`rofi`](https://github.com/DaveDavenport/rofi)
  * Homepage: Source found on [Github](https://github.com/zachbwh/bspwm_rice), based on Twily's old homepage with some of my own tweaks
  * Firefox theme: [`arc-darker`](https://github.com/horst3180/arc-firefox-theme)
  * Reddit theme: [Dark Naut Userstyle](https://userstyles.org/styles/118049/reddit-dark-naut-style)
