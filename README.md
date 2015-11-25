@@ -22,6 +22,8 @@ Programs in Dirty Screenshot: `vim`, `screenfetch`, `htop`, `color scripts` (I c
 
 Feel free to ask any questions or give suggestions.
 
+imgur album [here](https://imgur.com/a/fQHzj)
+
 ##TODO
  * Find/create an alternative homepage that uses the same quick search functionality but displays more information.
 
